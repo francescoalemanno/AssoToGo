@@ -6,6 +6,7 @@ import (
 	"flag"
 	"html/template"
 	"log"
+	"math"
 	"os"
 	"os/exec"
 	"runtime"
@@ -15,7 +16,8 @@ import (
 var AssoModel string
 
 func main() {
-	file_path := flag.String("f", "fattura.xml", "File fattura da interpretare")
+	file_path := flag.String("f", "fattura.xml", "File XML fattura da interpretare")
+	output_path := flag.String("o", "", "File HTML di esportazione")
 	flag.Parse()
 	bts, err := os.ReadFile(*file_path)
 	if err != nil {
@@ -23,6 +25,14 @@ func main() {
 	}
 	fatt := FatturaElettronica{}
 	err = xml.Unmarshal(bts, &fatt)
+	totale := 0.0
+	for _, v := range fatt.FatturaElettronicaBody.DatiBeniServizi.DatiRiepilogo {
+		totale += v.ImponibileImporto + v.Imposta
+	}
+	if math.Abs(fatt.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento-totale) > 1 {
+		fatt.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento = totale
+	}
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +49,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tmpFile, err := os.CreateTemp(os.TempDir(), "*.html")
+	var tmpFile *os.File
+	if *output_path == "" {
+		tmpFile, err = os.CreateTemp(os.TempDir(), "*.html")
+	} else {
+		tmpFile, err = os.Create(*output_path)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,7 +62,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	TryOpenFile(tmpFile.Name())
+	if *output_path == "" {
+		TryOpenFile(tmpFile.Name())
+	}
 }
 
 func TryOpenFile(file string) error {

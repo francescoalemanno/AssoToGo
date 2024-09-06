@@ -118,7 +118,7 @@
             font-size: small;
 
             border-right: solid 1px #000000;
-            border-bottom: none;
+            border-bottom: solid 1px #000000;
             border-left: solid 1px #000000;
         }
 
@@ -242,9 +242,9 @@
                                                 <div class="headContent"></div>
                                                 <div class="headContent">
 
-                                                    Cognome nome:
+                                                    Denominazione:
 
-                                                    <span>{{.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Cognome}}
+                                                    <span>{{.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione}}{{.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Cognome}}
                                                     </span><span>{{.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Nome}}</span>
                                                 </div>
                                                 <div class="headContent">
@@ -320,7 +320,7 @@
                                                 <div class="headContent"></div>
                                                 <div class="headContent">
 
-                                                    Cognome nome:
+                                                    Denominazione:
 
                                                     <span>{{.FatturaElettronicaHeader.CessionarioCommittente.DatiAnagrafici.Anagrafica.Denominazione}}{{.FatturaElettronicaHeader.CessionarioCommittente.DatiAnagrafici.Anagrafica.Cognome}}
                                                         {{.FatturaElettronicaHeader.CessionarioCommittente.DatiAnagrafici.Anagrafica.Nome}}</span>
@@ -408,12 +408,17 @@
                 <tbody>
                     {{range .FatturaElettronicaBody.DatiBeniServizi.DettaglioLinee}}
                     <tr>
-                        <td></td>
+                        <td>{{.CodiceArticolo.CodiceValore}}</td>
                         <td>{{.Descrizione}}</td>
                         <td class="import2">{{.Quantita}}</td>
                         <td class="import">{{.PrezzoUnitario}}</td>
                         <td class="textCenter">{{.UnitaMisura}}</td>
-                        <td class="import"></td>
+                        <td class="import">
+                            {{.ScontoMaggiorazione.Tipo}}
+                            {{if ne .ScontoMaggiorazione.Percentuale
+                            0.0}}{{.ScontoMaggiorazione.Percentuale}}%{{end}}{{if ne .ScontoMaggiorazione.Importo
+                            0.0}}{{.ScontoMaggiorazione.Importo}}{{end}}
+                        </td>
                         <td class="import">{{.AliquotaIVA}}</td>
                         <td>
                             <div class="import">{{.PrezzoTotale}}</div>

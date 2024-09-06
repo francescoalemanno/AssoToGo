@@ -38,9 +38,10 @@ type FatturaElettronica struct {
 				} `xml:"IdFiscaleIVA"`
 				CodiceFiscale string `xml:"CodiceFiscale"`
 				Anagrafica    struct {
-					Text    string `xml:",chardata"`
-					Nome    string `xml:"Nome"`
-					Cognome string `xml:"Cognome"`
+					Text          string `xml:",chardata"`
+					Nome          string `xml:"Nome"`
+					Cognome       string `xml:"Cognome"`
+					Denominazione string `xml:"Denominazione"`
 				} `xml:"Anagrafica"`
 				RegimeFiscale string `xml:"RegimeFiscale"`
 			} `xml:"DatiAnagrafici"`
@@ -114,14 +115,25 @@ type FatturaElettronica struct {
 		DatiBeniServizi struct {
 			Text           string `xml:",chardata"`
 			DettaglioLinee []struct {
-				Text           string  `xml:",chardata"`
-				NumeroLinea    string  `xml:"NumeroLinea"`
-				Descrizione    string  `xml:"Descrizione"`
-				Quantita       float64 `xml:"Quantita"`
-				UnitaMisura    string  `xml:"UnitaMisura"`
-				PrezzoUnitario float64 `xml:"PrezzoUnitario"`
-				PrezzoTotale   float64 `xml:"PrezzoTotale"`
-				AliquotaIVA    float64 `xml:"AliquotaIVA"`
+				Text                string  `xml:",chardata"`
+				NumeroLinea         string  `xml:"NumeroLinea"`
+				Descrizione         string  `xml:"Descrizione"`
+				Quantita            float64 `xml:"Quantita"`
+				UnitaMisura         string  `xml:"UnitaMisura"`
+				PrezzoUnitario      float64 `xml:"PrezzoUnitario"`
+				PrezzoTotale        float64 `xml:"PrezzoTotale"`
+				AliquotaIVA         float64 `xml:"AliquotaIVA"`
+				ScontoMaggiorazione struct {
+					Text        string  `xml:",chardata"`
+					Tipo        string  `xml:"Tipo"`
+					Importo     float64 `xml:"Importo"`
+					Percentuale float64 `xml:"Percentuale"`
+				}
+				CodiceArticolo struct {
+					Text         string `xml:",chardata"`
+					CodiceTipo   string `xml:"CodiceTipo"`
+					CodiceValore string `xml:"CodiceValore"`
+				}
 			} `xml:"DettaglioLinee"`
 			DatiRiepilogo []struct {
 				Text              string  `xml:",chardata"`
