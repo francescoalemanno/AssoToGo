@@ -29,6 +29,7 @@ func main() {
 	for _, v := range fatt.FatturaElettronicaBody.DatiBeniServizi.DatiRiepilogo {
 		totale += v.ImponibileImporto + v.Imposta
 	}
+
 	if math.Abs(fatt.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento-totale) > 1 {
 		fatt.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento = totale
 	}
@@ -66,19 +67,22 @@ func main() {
 		TryOpenFile(tmpFile.Name())
 	}
 }
-
+func run_cmd(args ...string) error {
+	cmnd := exec.Command(args[0], args[1:]...)
+	if err := cmnd.Start(); err != nil {
+		return err
+	}
+	if err := cmnd.Wait(); err != nil {
+		return err
+	}
+	return nil
+}
 func TryOpenFile(file string) error {
 	if runtime.GOOS == "windows" {
-		cmnd := exec.Command("explorer.exe", file)
-		err := cmnd.Start()
-		return err
+		return run_cmd("explorer.exe", file)
 	}
 	if runtime.GOOS == "darwin" {
-		cmnd := exec.Command("open", file)
-		err := cmnd.Start()
-		return err
+		return run_cmd("open", file)
 	}
-	cmnd := exec.Command("xdg-open", file)
-	err := cmnd.Start()
-	return err
+	return run_cmd("xdg-open", file)
 }
